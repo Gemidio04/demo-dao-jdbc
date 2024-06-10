@@ -15,7 +15,6 @@ import db.DbException;
 import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
-
 public class SellerDaoJDBC implements SellerDao {
 
 	private Connection conn; 
@@ -50,7 +49,7 @@ public class SellerDaoJDBC implements SellerDao {
 				}
 				DB.closeResultSet(rs);
 			}else {
-				throw new DbException("Unexpected erro! No rows affected!"); 
+				throw new DbException("Unexpected erro! Never rows affected!"); 
 			}
 		}catch (SQLException e) {
 			throw new DbException(e.getMessage()); 
@@ -60,8 +59,28 @@ public class SellerDaoJDBC implements SellerDao {
 	}
 
 	@Override
-	public void update(Seller obj) {
-		
+	public void update(Seller seller) {
+		PreparedStatement st = null; 
+		try {
+			st = conn.prepareStatement("UPDATE seller "
+					+ "SET Name = ?, Email = ?, BirthDate = ?, "
+					+ "BaseSalary = ?, DepartmentId = ? "
+					+ "WHERE Id = ?",
+					Statement.RETURN_GENERATED_KEYS); 
+			
+			st.setString(1, seller.getName());
+			st.setString(2, seller.getEmail());
+			st.setDate(3, new java.sql.Date(seller.getBirthDate().getTime()));
+			st.setDouble(4, seller.getBaseSalary()); 
+			st.setInt(5, seller.getDepartment().getId());
+			st.setInt(6, seller.getId());
+			
+			st.executeUpdate(); 
+		}catch (SQLException e) {
+			throw new DbException(e.getMessage()); 
+		}finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
