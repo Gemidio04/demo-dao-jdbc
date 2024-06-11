@@ -27,7 +27,7 @@ public class SellerDaoJDBC implements SellerDao {
 	public void insert(Seller seller) {
 		PreparedStatement st = null; 
 		try {
-			st = conn.prepareStatement("INSERT INTO seller\r\n"
+			st = conn.prepareStatement("INSERT INTO seller "
 					+ "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
 					+ "VALUES "
 					+ "(?, ?, ?, ?, ?)",
@@ -49,7 +49,7 @@ public class SellerDaoJDBC implements SellerDao {
 				}
 				DB.closeResultSet(rs);
 			}else {
-				throw new DbException("Unexpected erro! Never rows affected!"); 
+				throw new DbException("Unexpected erro! No rows affected!"); 
 			}
 		}catch (SQLException e) {
 			throw new DbException(e.getMessage()); 
